@@ -3,6 +3,7 @@ package com.sparta.bootlind.controller;
 import com.sparta.bootlind.dto.requestDto.SignupRequest;
 import com.sparta.bootlind.dto.responseDto.SignupResponse;
 import com.sparta.bootlind.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class UserController {
 
     // 회원가입 컨트롤러
     @PostMapping("/signup")
+    @Operation(summary = "회원가입", description = "회원가입 요청을 허가한다.")
     public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest requestDto, BindingResult bindingResult) {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
