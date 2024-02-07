@@ -34,4 +34,8 @@ public class Comment extends TimeStamped{
         this.post = post;
         this.content = request.getContent();
     }
+
+    public void update(CommentRequest request) {
+        this.content = request.getContent();
+    }
 }
