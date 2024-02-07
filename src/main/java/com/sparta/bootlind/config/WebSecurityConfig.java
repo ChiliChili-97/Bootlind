@@ -67,7 +67,7 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
-                        .requestMatchers("/signin", "/signup").permitAll()    // 해당 루트 요청 모두 허가
+                        .requestMatchers("/signin", "/signup", "/swagger-ui/**").permitAll()    // 해당 루트 요청 모두 허가
                         .anyRequest().authenticated());     // 그 외 모든 요청 인증
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
