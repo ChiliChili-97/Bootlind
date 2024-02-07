@@ -32,10 +32,16 @@ public class Post extends TimeStamped{
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Post(PostRequest requestDto, User user){
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.category = requestDto.getCategoryEnum();
+    public Post(PostRequest postRequest, User user){
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
+        this.category = postRequest.getCategoryEnum();
         this.user = user;
+    }
+
+    public void update(PostRequest postRequest) {
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
+        this.category = postRequest.getCategoryEnum();
     }
 }
