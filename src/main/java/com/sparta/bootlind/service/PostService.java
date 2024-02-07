@@ -32,15 +32,18 @@ public class PostService {
         return new PostResponse(post);
     }
 
-    public PostResponse getPostByCategory(String category, User user) {
-        Post post = (Post) postRepository.findByCategory(category).orElseThrow(
-                ()-> new IllegalArgumentException("해당 category 의 게시글이 없습니다.")
-        );
+    public List<PostResponse> getPostByCategory(String category, User user) {
+        List<Post> postList = postRepository.findByCategory(category);
+        List<PostResponse> postResponseList = new ArrayList<>();
+
 
 //        if(!post.getUser().getUsername().equals(user.getUsername()))
 //            throw new IllegalArgumentException("게시글을 확인할 권한이 없습니다.");
 
-        return new PostResponse(post);
+        for(Post post : postList){
+            postResponseList.add(new PostResponse(post));
+        }
+        return postResponseList;
     }
 
     @Transactional

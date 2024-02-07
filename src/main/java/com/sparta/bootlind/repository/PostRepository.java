@@ -12,5 +12,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Optional<Object> findByTitle(String title);
 
-    Optional<Object> findByCategory(String category);
+    List<Post> findByCategory(String category);
 }

@@ -43,8 +43,8 @@ public class PostController {
     }
 
     @GetMapping("/posts/{category}")
-    @Operation(summary = "게시글 조회 (카테고리)", description = "카테고리를 사용하여 게시글을 조회한다.")
-    public PostResponse getPostByCategory(@PathVariable String category, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @Operation(summary = "게시글 목록 조회 (카테고리)", description = "카테고리를 사용하여 게시글을 조회한다.")
+    public List<PostResponse> getPostByCategory(@PathVariable String category, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.getPostByCategory(category, userDetails.getUser());
     }
 
