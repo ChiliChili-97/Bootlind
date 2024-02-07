@@ -17,23 +17,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private UserRoleEnum role;
+    @Column(nullable = false, unique = true)
+    private String nickname;
 
     @Column(nullable = true)
     private String profile;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
-    public User(String username, String password, UserRoleEnum role, String profile){
+    public User(String username, String password, String nickname, String profile, UserRoleEnum role) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.nickname = nickname;
         this.profile = profile;
+        this.role = role;
     }
+
 }
