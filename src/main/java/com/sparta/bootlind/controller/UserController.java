@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -46,15 +49,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/follow/{id}")
-    @Operation(summary = "팔로우(id)", description = "다른 사용자를 팔로우/언팔로우 한다.")
-    public String followById(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return userService.followById(id, userDetails.getUser());
-    }
+    @DeleteMapping("/users/delete")
+    @Operation(summary = "계정 삭제", description = "계정을 삭제하며 게시글의 소유를 '알수없음' 으로 전환한다.")
+    public String deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    @DeleteMapping("user/delete")
-    @Operation(summary = "회원탈퇴", description = "회원 탈퇴를 하며 기존 게시글의 소유를 넘긴다.")
-    public String deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return userService.deleteUser(userDetails.getUser());
+        return userService.delete(userDetails.getUser());
     }
 }

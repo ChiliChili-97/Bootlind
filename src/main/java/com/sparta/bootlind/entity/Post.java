@@ -13,7 +13,7 @@ import lombok.Setter;
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
-public class Post extends TimeStamped{
+public class Post extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class Post extends TimeStamped{
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Post(PostRequest postRequest, User user){
+    public Post(PostRequest postRequest, User user) {
         this.title = postRequest.getTitle();
         this.content = postRequest.getContent();
         this.category = postRequest.getCategory();

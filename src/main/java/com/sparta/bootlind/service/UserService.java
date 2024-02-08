@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +22,9 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final String ADMIN_TOKEN = "f679d89c320cc4adb72b7647a64ccbe520406dc3ee4578b44bcffbfa7ebbb85e30b964306b6398d3a2d7098ecd1bc203551e356ac5ec4a5ee0c7dc899fb704c5";
 
@@ -55,35 +54,22 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional
-    public String followById(Long id, User user) {
-        User userfollow = userRepository.findByUsername(user.getUsername()).orElseThrow(
-                ()-> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
-        );
-        userRepository.findById(id).orElseThrow(
-                ()-> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
-        );
-        return userfollow.follow(id);
-    }
-
-    public String deleteUser(User user) {
+    // 계정 삭제
+    public String delete(User user) {
         User target = userRepository.findByUsername(user.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
-
         User blank = userRepository.findById(1L).orElseThrow(
-                () -> new IllegalArgumentException("알수없음 이 존재하지 않습니다")
+                () -> new IllegalArgumentException("알수없음이 존재하지 않습니다.")
         );
 
         List<Comment> commentList = commentRepository.findAllByUser(target);
-        for(Comment comment : commentList)
-            comment.updateUser(blank);
+        commentList.forEach(comment -> comment.updateUser(blank));
 
         List<Post> postList = postRepository.findAllByUser(target);
-        for(Post post : postList)
-            post.updateUser(blank);
+        postList.forEach(post -> post.updateUser(blank));
 
         userRepository.deleteById(target.getId());
-        return target.getUsername() + "삭제되었습니다.";
+        return target.getUsername() + " 가 삭제되었습니다.";
     }
 }

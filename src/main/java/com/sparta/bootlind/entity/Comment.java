@@ -13,7 +13,7 @@ import lombok.Setter;
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 
-public class Comment extends TimeStamped{
+public class Comment extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +29,7 @@ public class Comment extends TimeStamped{
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public Comment(User user, Post post, CommentRequest request){
+    public Comment(User user, Post post, CommentRequest request) {
         this.user = user;
         this.post = post;
         this.content = request.getContent();
