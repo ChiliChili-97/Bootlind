@@ -29,25 +29,25 @@ public class UserController {
 //    @Secured(UserRoleEnum.Authority.ADMIN) 어드민 권한 활성화 어노테이션
 
     // 회원가입 컨트롤러
-    @PostMapping("/signup")
-    @Operation(summary = "회원가입", description = "회원가입 요청을 허가한다.")
-    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest requestDto, BindingResult bindingResult) {
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-
-        if (!fieldErrors.isEmpty()) {
-
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-            SignupResponse responseDto = new SignupResponse("회원가입 실패", 403);
-            return ResponseEntity.badRequest().body(responseDto);
-
-        } else {
-            SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
-            userService.signup(requestDto);
-            return ResponseEntity.ok().body(responseDto);
-        }
-    }
+//    @PostMapping("/signup")
+//    @Operation(summary = "회원가입", description = "회원가입 요청을 허가한다.")
+//    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest requestDto, BindingResult bindingResult) {
+//        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+//
+//        if (!fieldErrors.isEmpty()) {
+//
+//            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+//                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+//            }
+//            SignupResponse responseDto = new SignupResponse("회원가입 실패", 403);
+//            return ResponseEntity.badRequest().body(responseDto);
+//
+//        } else {
+//            SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
+//            userService.signup(requestDto);
+//            return ResponseEntity.ok().body(responseDto);
+//        }
+//    }
 
     @PostMapping("/follows/{userid}")
     @Operation(summary = "팔로우(userid)", description = "다른 사용자를 팔로우/언팔로우 한다.")

@@ -57,7 +57,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF 설정
-        http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf((csrf) -> csrf.disable());
 
         // 세션 사용하지 않고 JWT 채용
         http.sessionManagement((sessionManagement) ->
@@ -69,6 +69,12 @@ public class WebSecurityConfig {
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
                         .requestMatchers("/signin", "/signup", "/swagger-ui/**").permitAll()    // 해당 루트 요청 모두 허가
                         .anyRequest().authenticated());     // 그 외 모든 요청 인증
+
+
+        http.formLogin((formLogin) ->
+                formLogin
+                        .loginPage("/login").permitAll()
+        );
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
