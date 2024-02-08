@@ -53,4 +53,8 @@ public class Post extends TimeStamped{
         this.content = postRequest.getContent();
         this.category = postRequest.getCategory();
     }
+
+    public void updateUser(User blank) {
+        this.user = blank;
+    }
 }

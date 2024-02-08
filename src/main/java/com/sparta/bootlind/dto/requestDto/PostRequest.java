@@ -1,6 +1,5 @@
 package com.sparta.bootlind.dto.requestDto;
 
-import com.sparta.bootlind.entity.CategoryEnum;
 import lombok.Getter;
 
 @Getter

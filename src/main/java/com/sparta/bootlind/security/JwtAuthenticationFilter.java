@@ -2,6 +2,7 @@ package com.sparta.bootlind.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.bootlind.dto.requestDto.SignInRequest;
+import com.sparta.bootlind.dto.responseDto.SigninResponse;
 import com.sparta.bootlind.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,16 +43,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
 
         String token = jwtUtil.createToken(username);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        response.setStatus(200);
+
+        // 응답 생성
+        SigninResponse signinResponse = new SigninResponse("로그인 성공", 200);
+        // JSON으로 변환하여 응답 (포스트맨 테스트용)
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(signinResponse));
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setStatus(401);
+
+        // 응답 생성
+        SigninResponse signinResponse = new SigninResponse("로그인 실패", 401);
+        // JSON으로 변환하여 응답 (포스트맨 테스트용)
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(signinResponse));
     }
 
 }
