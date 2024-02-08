@@ -46,4 +46,9 @@ public class UserService {
         User user = new User(username, password, nickname, profile, role);
         userRepository.save(user);
     }
+
+    // 계정 삭제
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
 }

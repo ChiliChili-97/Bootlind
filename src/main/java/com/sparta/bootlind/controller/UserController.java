@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,5 +42,13 @@ public class UserController {
             userService.signup(requestDto);
             return ResponseEntity.ok().body(responseDto);
         }
+    }
+
+    @DeleteMapping("/users/{id}")
+    @Operation(summary = "계정 삭제", description = "계정을 삭제한다.")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+
+        userService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }
