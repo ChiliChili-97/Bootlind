@@ -1,6 +1,8 @@
 package com.sparta.bootlind.service;
 
+import com.sparta.bootlind.dto.requestDto.UserRequest;
 import com.sparta.bootlind.dto.requestDto.SignupRequest;
+import com.sparta.bootlind.dto.responseDto.UserResponse;
 import com.sparta.bootlind.entity.Comment;
 import com.sparta.bootlind.entity.Post;
 import com.sparta.bootlind.entity.User;
@@ -8,10 +10,12 @@ import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.repository.CommentRepository;
 import com.sparta.bootlind.repository.PostRepository;
 import com.sparta.bootlind.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +56,12 @@ public class UserService {
         // 사용자 등록
         User user = new User(username, password, nickname, profile, role);
         userRepository.save(user);
+    }
+
+    public UserResponse updateProfile(UserRequest requestDto, User user) {
+        user.setProfile(requestDto.getProfile());
+        userRepository.save(user);
+        return new UserResponse(user);
     }
 
     // 계정 삭제
