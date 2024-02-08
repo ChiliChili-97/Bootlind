@@ -2,14 +2,17 @@ package com.sparta.bootlind.controller;
 
 import com.sparta.bootlind.dto.requestDto.SignupRequest;
 import com.sparta.bootlind.dto.responseDto.SignupResponse;
+import com.sparta.bootlind.security.UserDetailsImpl;
 import com.sparta.bootlind.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,4 +48,11 @@ public class UserController {
             return ResponseEntity.ok().body(responseDto);
         }
     }
+
+    @PostMapping("/follow/{id}")
+    @Operation(summary = "팔로우(id)", description = "다른 사용자를 팔로우/언팔로우 한다.")
+    public String followById(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.followById(id, userDetails.getUser());
+    }
+
 }

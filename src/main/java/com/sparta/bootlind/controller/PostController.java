@@ -59,5 +59,11 @@ public class PostController {
     public String deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.deletePost(id, userDetails.getUser());
     }
+
+    @GetMapping("/posts/folllow")
+    @Operation(summary = "게시글 목록 조회 (팔로워)", description = "팔로워 목록을 사용하여 게시글을 조회한다.")
+    public List<PostResponse> getPostByFollower(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.getPostByFollower(userDetails.getUser());
+    }
 }
 

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -45,5 +46,16 @@ public class UserService {
         // 사용자 등록
         User user = new User(username, password, nickname, profile, role);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public String followById(Long id, User user) {
+        User userfollow = userRepository.findByUsername(user.getUsername()).orElseThrow(
+                ()-> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
+        );
+        userRepository.findById(id).orElseThrow(
+                ()-> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
+        );
+        return userfollow.follow(id);
     }
 }

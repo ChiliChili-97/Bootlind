@@ -18,4 +18,12 @@ public class Category {
 
     @Column(nullable = false)
     private String category;
+
+    public Category(String category){
+        this.category = category;
+    }
+
+    public void update(String categoryname) {
+        this.category = categoryname;
+    }
 }
