@@ -1,5 +1,6 @@
 package com.sparta.bootlind.controller;
 
+import com.sparta.bootlind.dto.requestDto.UserRequest;
 import com.sparta.bootlind.dto.requestDto.SignupRequest;
 import com.sparta.bootlind.dto.responseDto.UserResponse;
 import com.sparta.bootlind.dto.responseDto.SignupResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -62,5 +64,11 @@ public class UserController {
     public String deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return userService.delete(userDetails.getUser());
+    }
+
+    @PutMapping("/users/update")
+    @Operation(summary = "프로필 수정", description = "프로필 수정 요청을 허가한다.")
+    public UserResponse updateProfile(@RequestBody UserRequest requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.updateProfile(requestDto, userDetails.getUser());
     }
 }

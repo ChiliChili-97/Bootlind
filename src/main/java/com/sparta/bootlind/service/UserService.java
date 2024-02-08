@@ -5,6 +5,7 @@ import com.sparta.bootlind.dto.requestDto.SignupRequest;
 import com.sparta.bootlind.dto.responseDto.UserResponse;
 import com.sparta.bootlind.entity.Comment;
 import com.sparta.bootlind.entity.Post;
+import com.sparta.bootlind.dto.responseDto.UserResponse;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.repository.CommentRepository;
