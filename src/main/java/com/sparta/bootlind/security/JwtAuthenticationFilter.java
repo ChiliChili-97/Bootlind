@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(401);
 
         // 응답 생성
-        SigninResponse signinResponse = new SigninResponse("로그인 성공", 200);
+        SigninResponse signinResponse = new SigninResponse("로그인 실패", 401);
         // JSON으로 변환하여 응답 (포스트맨 테스트용)
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
