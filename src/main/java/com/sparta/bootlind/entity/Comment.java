@@ -29,10 +29,19 @@ public class Comment extends TimeStamped{
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Column
+    private String likes;
+
+    @Column
+    private Integer likescnt;
+
+
+
     public Comment(User user, Post post, CommentRequest request){
         this.user = user;
         this.post = post;
         this.content = request.getContent();
+        this.likes = "";
     }
 
     public void update(CommentRequest request) {

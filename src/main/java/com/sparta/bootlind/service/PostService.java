@@ -6,10 +6,13 @@ import com.sparta.bootlind.entity.Post;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -90,5 +93,42 @@ public class PostService {
         return "삭제되었습니다.";
 
 
+    }
+
+    @Transactional
+    public String likePost(Long id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(
+                ()-> new IllegalArgumentException("해당 id의 게시글이 없습니다.")
+        );
+
+        if(post.getUser().getUsername().equals(user.getUsername()))
+            throw new IllegalArgumentException("자신의 게시물에는 좋아요를 할 수 없습니다.");
+
+        String like = "/" + user.getId();
+        String likes = post.getPostLikes();
+        if (likes.contains(like)){
+            likes = likes.replace(like,"");
+            post.setPostLikes(likes);
+            List<String> list = Arrays.asList(likes.split("/"));
+            post.setLikescnt(list.size()-1);
+            return "게시물에 좋아요를 취소합니다." + post.getPostLikes()+ " 좋아요 수: " + post.getLikescnt();
+        }
+        else{
+            likes = like.concat(likes);
+            post.setPostLikes(likes);
+            List<String> list = Arrays.asList(likes.split("/"));
+            post.setLikescnt(list.size()-1);
+            return "게시물에 좋아요를 누르셨습니다" + post.getPostLikes()+" 좋아요 수: " + post.getLikescnt();
+        }
+    }
+
+    public List<PostResponse> getPostLike() {
+        List<Post> postList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "likescnt"));
+        List<PostResponse> postResponseList = new ArrayList<>();
+
+        for(Post post : postList){
+            postResponseList.add(new PostResponse(post));
+        }
+        return postResponseList;
     }
 }

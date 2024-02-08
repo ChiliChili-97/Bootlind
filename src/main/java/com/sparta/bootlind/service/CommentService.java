@@ -9,9 +9,14 @@ import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.repository.CommentRepository;
 import com.sparta.bootlind.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +57,40 @@ public class CommentService {
         );
 
         return comment;
+    }
+
+    @Transactional
+    public String likeComment(Long id, User user) {
+        Comment comment = findComment(id);
+
+        if(comment.getUser().getUsername().equals(user.getUsername()))
+            throw new IllegalArgumentException("자신의 댓글에는 좋아요를 할 수 없습니다.");
+
+        String like = "/" + user.getId();
+        String likes = comment.getLikes();
+        if (likes.contains(like)){
+            likes = likes.replace(like,"");
+            comment.setLikes(likes);
+            List<String> list = Arrays.asList(likes.split("/"));
+            comment.setLikescnt(list.size()-1);
+            return "댓글에 좋아요를 취소합니다." + comment.getLikes()+ " 좋아요 수: " + comment.getLikescnt();
+        }
+        else{
+            likes = like.concat(likes);
+            comment.setLikes(likes);
+            List<String> list = Arrays.asList(likes.split("/"));
+            comment.setLikescnt(list.size()-1);
+            return "댓글에 좋아요를 누르셨습니다" + comment.getLikes()+" 좋아요 수: " + comment.getLikescnt();
+        }
+    }
+
+    public List<CommentResponse> getCommentLike() {
+        List<Comment> commentList = commentRepository.findAll(Sort.by(Sort.Direction.DESC, "likescnt"));
+        List<CommentResponse> commentResponseList = new ArrayList<>();
+
+        for(Comment comment : commentList){
+            commentResponseList.add(new CommentResponse(comment));
+        }
+        return commentResponseList;
     }
 }
