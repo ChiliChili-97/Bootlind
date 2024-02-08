@@ -38,4 +38,8 @@ public class Comment extends TimeStamped{
     public void update(CommentRequest request) {
         this.content = request.getContent();
     }
+
+    public void updateUser(User blank) {
+        this.user = blank;
+    }
 }

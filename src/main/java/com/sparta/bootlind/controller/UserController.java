@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -55,4 +52,9 @@ public class UserController {
         return userService.followById(id, userDetails.getUser());
     }
 
+    @DeleteMapping("user/delete")
+    @Operation(summary = "회원탈퇴", description = "회원 탈퇴를 하며 기존 게시글의 소유를 넘긴다.")
+    public String deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.deleteUser(userDetails.getUser());
+    }
 }

@@ -2,9 +2,11 @@ package com.sparta.bootlind.service;
 
 import com.sparta.bootlind.dto.requestDto.PostRequest;
 import com.sparta.bootlind.dto.responseDto.PostResponse;
+import com.sparta.bootlind.entity.Comment;
 import com.sparta.bootlind.entity.Post;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.repository.CategoryRepository;
+import com.sparta.bootlind.repository.CommentRepository;
 import com.sparta.bootlind.repository.PostRepository;
 import com.sparta.bootlind.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
     public PostResponse createPost(PostRequest postRequest, User user) {
         categoryRepository.findByCategory(postRequest.getCategory()).orElseThrow(
                 ()-> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
@@ -95,6 +98,11 @@ public class PostService {
 
         if(!post.getUser().getUsername().equals(user.getUsername()))
             throw new IllegalArgumentException("게시글 작성자만 삭제할 수 있습니다.");
+
+        List<Comment> commentList = commentRepository.findAllByPost(post);
+
+        for(Comment comment : commentList)
+            commentRepository.deleteById(comment.getId());
 
         postRepository.deleteById(id);
         return "삭제되었습니다.";
