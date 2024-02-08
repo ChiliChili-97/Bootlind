@@ -1,15 +1,20 @@
 package com.sparta.bootlind.controller;
 
 import com.sparta.bootlind.dto.requestDto.SignupRequest;
+import com.sparta.bootlind.dto.responseDto.UserInfoResponse;
+import com.sparta.bootlind.entity.UserRoleEnum;
+import com.sparta.bootlind.security.UserDetailsImpl;
 import com.sparta.bootlind.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -31,7 +36,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "home";
+        return "index";
     }
 
     @PostMapping("/signup")
@@ -47,5 +52,15 @@ public class HomeController {
         userService.signup(requestDto);
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/user-info")
+    @ResponseBody
+    public UserInfoResponse getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String username = userDetails.getUser().getUsername();
+        UserRoleEnum role = userDetails.getUser().getRole();
+        boolean isAdmin = (role == UserRoleEnum.ADMIN);
+
+        return new UserInfoResponse(username, isAdmin);
     }
 }
