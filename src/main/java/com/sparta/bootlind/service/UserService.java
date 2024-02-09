@@ -1,15 +1,21 @@
 package com.sparta.bootlind.service;
 
 import com.sparta.bootlind.dto.requestDto.*;
+import com.sparta.bootlind.dto.responseDto.SignupResponse;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,11 +28,24 @@ public class UserService {
 
     private final String ADMIN_TOKEN = "f679d89c320cc4adb72b7647a64ccbe520406dc3ee4578b44bcffbfa7ebbb85e30b964306b6398d3a2d7098ecd1bc203551e356ac5ec4a5ee0c7dc899fb704c5";
 
-    public void signup(SignupRequest requestDto) {
+    public void signup(@Valid SignupRequest requestDto, BindingResult bindingResult) {
         String username = requestDto.getUsername();
         String profile = requestDto.getProfile();
         String nickname = requestDto.getNickname();
         String password = passwordEncoder.encode(requestDto.getPassword());
+
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+
+        if (!fieldErrors.isEmpty()) {
+
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+            }
+            SignupResponse responseDto = new SignupResponse("회원가입 실패", 403);
+
+        } else {
+            SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
+        }
 
         // 회원 중복 검증
         Optional<User> verificationUser = userRepository.findByUsername(username);
