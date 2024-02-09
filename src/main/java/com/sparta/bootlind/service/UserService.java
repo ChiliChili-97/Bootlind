@@ -1,7 +1,6 @@
 package com.sparta.bootlind.service;
 
 import com.sparta.bootlind.dto.requestDto.*;
-import com.sparta.bootlind.dto.responseDto.SignupResponse;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.repository.UserRepository;
@@ -34,6 +33,7 @@ public class UserService {
         String nickname = requestDto.getNickname();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
+        // 필드 에러 확인
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
         if (!fieldErrors.isEmpty()) {
@@ -41,30 +41,27 @@ public class UserService {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
-            SignupResponse responseDto = new SignupResponse("회원가입 실패", 403);
+            throw new IllegalArgumentException("필드 에러가 존재합니다.");
 
         } else {
-            SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
-        }
-
-        // 회원 중복 검증
-        Optional<User> verificationUser = userRepository.findByUsername(username);
-        if (verificationUser.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
-        }
-
-        // 사용자 권한 확인
-        UserRoleEnum role = UserRoleEnum.USER;
-        if (requestDto.isAdmin()) {
-            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-                throw new IllegalArgumentException("관리자 인증키가 틀려 등록이 불가능합니다.");
+            // 회원 중복 검증
+            Optional<User> verificationUser = userRepository.findByUsername(username);
+            if (verificationUser.isPresent()) {
+                throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
             }
-            role = UserRoleEnum.ADMIN;
-        }
 
-        // 사용자 등록
-        User user = new User(username, password, nickname, profile, role);
-        userRepository.save(user);
+            // 사용자 권한 확인
+            UserRoleEnum role = UserRoleEnum.USER;
+            if (requestDto.isAdmin()) {
+                if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
+                    throw new IllegalArgumentException("관리자 인증키가 틀려 등록이 불가능합니다.");
+                }
+                role = UserRoleEnum.ADMIN;
+            }
+            // 사용자 등록
+            User user = new User(username, password, nickname, profile, role);
+            userRepository.save(user);
+        }
     }
 
     @Transactional
