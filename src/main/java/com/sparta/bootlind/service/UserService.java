@@ -1,9 +1,6 @@
 package com.sparta.bootlind.service;
 
-import com.sparta.bootlind.dto.requestDto.SignupRequest;
-import com.sparta.bootlind.dto.requestDto.UpdateNicknameRequest;
-import com.sparta.bootlind.dto.requestDto.UpdatePasswordRequest;
-import com.sparta.bootlind.dto.requestDto.UpdateUsernameRequest;
+import com.sparta.bootlind.dto.requestDto.*;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.repository.UserRepository;
@@ -66,7 +63,7 @@ public class UserService {
 
     public String deactivateUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
         if (target.getStatus().equals("DEACTIVATED")) {
@@ -83,7 +80,7 @@ public class UserService {
 
     public String activateUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
         if (target.getStatus().equals("ACTIVATED")) {
@@ -100,7 +97,7 @@ public class UserService {
 
     public String deleteUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
         if (target.getStatus().equals("DELETED")) {
@@ -143,7 +140,7 @@ public class UserService {
 
     public String updateUsername(UpdateUsernameRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
         Optional<User> checkUsername = userRepository.findByUsername(request.getUsername());
@@ -158,7 +155,7 @@ public class UserService {
 
     public String updateNickname(UpdateNicknameRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
         Optional<User> checkNickname = userRepository.findByNickname(request.getNickname());
@@ -173,7 +170,7 @@ public class UserService {
 
     public String updateProfile(String profile, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
         target.updateProfile(profile);
@@ -183,7 +180,7 @@ public class UserService {
 
     public String updatePassword(UpdatePasswordRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다")
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
         if (!passwordEncoder.matches(request.getOldpassword(), user.getPassword())) {
@@ -193,5 +190,17 @@ public class UserService {
         target.updatePassword(passwordEncoder.encode(request.getNewpassword()));
 
         return "수정 되었습니다.";
+    }
+
+    public String accessProfile(Long id, User user, ProfileAccessRequest request) {
+
+        userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
+        );
+
+        if (!passwordEncoder.matches(request.getInputPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        return "비밀번호가 일치합니다. 회원 정보로 이동합니다.";
     }
 }

@@ -1,9 +1,6 @@
 package com.sparta.bootlind.controller;
 
-import com.sparta.bootlind.dto.requestDto.SignupRequest;
-import com.sparta.bootlind.dto.requestDto.UpdateNicknameRequest;
-import com.sparta.bootlind.dto.requestDto.UpdatePasswordRequest;
-import com.sparta.bootlind.dto.requestDto.UpdateUsernameRequest;
+import com.sparta.bootlind.dto.requestDto.*;
 import com.sparta.bootlind.dto.responseDto.SignupResponse;
 import com.sparta.bootlind.security.UserDetailsImpl;
 import com.sparta.bootlind.service.UserService;
@@ -53,6 +50,12 @@ public class UserController {
     @Operation(summary = "팔로우(userid)", description = "다른 사용자를 팔로우/언팔로우 한다.")
     public String followById(@PathVariable Long userid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.followById(userid, userDetails.getUser());
+    }
+
+    @PostMapping("users/{userid}/access")
+    @Operation(summary = "프로필 수정 액세스", description = "프로필 수정 페이지에 액세스한다.")
+    public String profileAccess(@PathVariable Long userid, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ProfileAccessRequest request) {
+        return userService.accessProfile(userid, userDetails.getUser(), request);
     }
 
     @PutMapping("users/updates/deactivate")
