@@ -2,6 +2,7 @@ package com.sparta.bootlind.controller;
 
 import com.sparta.bootlind.dto.requestDto.*;
 import com.sparta.bootlind.dto.responseDto.SignupResponse;
+import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.security.UserDetailsImpl;
 import com.sparta.bootlind.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,12 +10,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -64,8 +63,9 @@ public class UserController {
         return userService.deleteUser(userDetails.getUser());
     }
 
+    @Secured(UserRoleEnum.Authority.ADMIN)
     @PutMapping("/users/updates/restore/{userid}")
-    @Operation(summary = "회원 복구(관리자메뉴)", description = "탈퇴한 회원의 상태를 활성화(ACTIVATED)로 변경한다.") // 관리자 인가 필요
+    @Operation(summary = "회원 복구(관리자메뉴)", description = "탈퇴한 회원의 상태를 활성화(ACTIVATED)로 변경한다.")
     public String restoreUser(@PathVariable Long userid, @RequestBody @Valid SignupRequest requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.restoreUser(userid, requestDto, userDetails.getUser());
     }
