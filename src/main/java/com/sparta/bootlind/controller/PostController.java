@@ -32,7 +32,7 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postid}")
-    @Operation(summary = "게시글 조회", description = "게시글 ID를 사용해 게시글을 조회한다.")
+    @Operation(summary = "게시글 조회 (게시글 ID)", description = "게시글 ID를 사용해 게시글을 조회한다.")
     public PostResponse getPostByPostId(@PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.getPostByPostId(postid,userDetails.getUser());
     }

@@ -111,7 +111,7 @@ $(document).ready(function () {
         });
     }
 
-    // 특정 게시글의 상세 정보를 가져와서 출력하는 함수
+// 특정 게시글의 상세 정보를 가져와서 출력하는 함수
     function getPostById(postId) {
         $.ajax({
             type: "GET",
@@ -119,8 +119,9 @@ $(document).ready(function () {
             headers: {
                 Authorization: token
             },
-            success: function (response) {
-                displayPostDetail(response);
+            success: function (post) {
+                displayPostDetail(post);
+                getComments(postId); // 상세 정보를 가져온 후에 댓글을 가져옴
             },
             error: function (xhr, status, error) {
                 console.error(error);
@@ -129,18 +130,51 @@ $(document).ready(function () {
         });
     }
 
+
     // 특정 게시글의 상세 정보를 화면에 출력하는 함수
     function displayPostDetail(post) {
         $('#post-list').empty();
         const card = `
         <li class="card">
             <h1>${post.title}</h1>
-            <h3>${post.category}</h3>
-            <h3>${post.id}</h3>
+            <h3>카테고리: ${post.category}</h3>
+            <h3>게시글 ID : ${post.id}</h3>
             <p>작성자: ${post.nickname}</p>
             <p>${post.content}</p>
             <p>좋아요: ${post.likescnt}</p>
         </li>`;
         $('#post-list').append(card);
+    }
+
+    // 특정 게시글의 댓글을 가져오는 함수
+    function getComments(postId) {
+        $.ajax({
+            type: "GET",
+            url: "/comments/" + postId,
+            headers: {
+                Authorization: token
+            },
+            success: function (response) {
+                displayComments(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("댓글을 가져오는데 실패했습니다.");
+            }
+        });
+    }
+
+// 댓글을 화면에 출력하는 함수
+    function displayComments(comments) {
+        $('#comment-list').empty();
+        comments.forEach(function (comment) {
+            const card = `
+            <li class="card" data-comment-id="${comment.id}">
+                <p>작성자: ${comment.nickname}</p>
+                <p>${comment.content}</p>
+                <p>좋아요: ${comment.likescnt}</p>
+            </li>`;
+            $('#comment-list').append(card);
+        });
     }
 });
