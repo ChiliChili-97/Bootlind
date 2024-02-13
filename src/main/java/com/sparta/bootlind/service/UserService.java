@@ -225,6 +225,12 @@ public class UserService {
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
-        return new InfoResponse(target);
+        String[] follwernumbers = target.getFollwers();
+        String[] follwers = new String[target.getFollwers().length];
+        for(int i=0; i<follwernumbers.length;i++) {
+            follwers[i] = userRepository.findById(Long.parseLong(follwernumbers[i])).orElseThrow(()-> new IllegalArgumentException("없음.")).getNickname();
+        }
+
+        return new InfoResponse(target,follwers);
     }
 }

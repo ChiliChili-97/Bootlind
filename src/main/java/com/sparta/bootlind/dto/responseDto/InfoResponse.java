@@ -14,12 +14,12 @@ public class InfoResponse {
     private String role;
     private String[] followers;
 
-    public InfoResponse(User target) {
+    public InfoResponse(User target, String[] followers) {
         this.username = target.getUsername();
         this.nickname = target.getNickname();
         this.profile = target.getProfile();
         this.status = target.getStatus();
         this.role = target.getRole().toString();
-        this.followers = target.getFollwers();
+        this.followers = followers;
     }
 }

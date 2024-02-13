@@ -30,6 +30,8 @@ $(document).ready(function () {
     }
 
     function displayUserInfo(user) {
+        $('#post-list').empty();
+        $('#comment-list').empty(); // 기존의 댓글 목록을 지움
         const userInfo = `
         <h2>사용자 정보</h2>
         <p>ID: ${user.username}</p>
@@ -37,7 +39,7 @@ $(document).ready(function () {
         <p>프로필: ${user.profile}</p>
         <p>역할: ${user.role}</p>
         <p>상태: ${user.status}</p>
-        <p>팔로워 목록: ${user.followers.join(', ')}</p>
+        <p>팔로우 한 유저 목록: ${user.followers.join(', ')}</p>
         `;
         $('#post-list').empty().append(userInfo);
     }
