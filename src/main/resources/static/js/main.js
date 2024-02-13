@@ -215,6 +215,7 @@ $(document).ready(function () {
         $('#post-list').empty();
         const card = `
     <li class="card">
+        <p><button id="delete-post-btn">게시글 삭제</button></p>
         <h1>${post.title}</h1>
         <h3>카테고리: ${post.category}</h3>
         <h3>게시글 ID : ${post.id}</h3>
@@ -249,6 +250,10 @@ $(document).ready(function () {
             submitLike(post.id);
         });
 
+        $('#delete-post-btn').on('click', function () {
+            deletePost(post.id);
+        });
+
         // 팔로우 버튼에 클릭 이벤트 핸들러 등록
         $('#follow-btn').on('click', function () {
             submitFollow(post.nickname);
@@ -266,6 +271,25 @@ $(document).ready(function () {
             success: function (response) {
                 alert(response);
                 getPostById(postId)
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("좋아요에 실패했습니다.");
+            }
+        });
+    }
+
+    function deletePost(postId) {
+        $.ajax({
+            type: "DELETE",
+            url: `/posts/` + postId,
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            success: function (response) {
+                alert(response);
+                getPostList()
             },
             error: function (xhr, status, error) {
                 console.error(error);
@@ -317,6 +341,7 @@ $(document).ready(function () {
         comments.forEach(function (comment) {
             const card = `
         <li class="card" data-comment-id="${comment.id}">
+            <p><button class="delete-comment-btn" data-comment-id="${comment.id}">댓글 삭제</button></p>
             <p>작성자: ${comment.nickname} <button class="follow-btn" data-nickname="${comment.nickname}">팔로우</button></p>
             <p>${comment.content}</p>
             <p>좋아요: <span id="like-count-${comment.id}">${comment.likescnt}</span> <button class="comment-like-btn" data-comment-id="${comment.id}">좋아요</button></p>
@@ -328,6 +353,11 @@ $(document).ready(function () {
         $('.comment-like-btn').on('click', function () {
             const commentId = $(this).data('comment-id');
             submitCommentLike(commentId, postId);
+        });
+
+        $('.delete-comment-btn').on('click', function () {
+            const commentId = $(this).data('comment-id');
+            deleteComment(commentId, postId);
         });
 
         // 댓글 작성자를 팔로우하는 버튼에 클릭 이벤트 핸들러 등록
@@ -352,6 +382,25 @@ $(document).ready(function () {
             error: function (xhr, status, error) {
                 console.error(error);
                 alert("좋아요에 실패했습니다.");
+            }
+        });
+    }
+
+    function deleteComment(commentId, postId) {
+        $.ajax({
+            type: "DELETE",
+            url: `/comments/` + commentId,
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            success: function (response) {
+                alert(response);
+                getPostById(postId);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("삭제에 실패했습니다.");
             }
         });
     }

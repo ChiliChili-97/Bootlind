@@ -131,14 +131,14 @@ public class PostService {
 
     public String deletePost(Long id, User user) {
         if (!user.getStatus().equals("ACTIVATED"))
-            throw new IllegalArgumentException("활성화 상태인 사용자만 가능합니다.");
+            return "활성화 상태인 사용자만 가능합니다.";
 
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 게시글이 없습니다.")
         );
 
         if (!post.getUser().getUsername().equals(user.getUsername()))
-            throw new IllegalArgumentException("게시글 작성자만 삭제할 수 있습니다.");
+            return "게시글 작성자만 삭제할 수 있습니다.";
 
         List<Comment> commentList = commentRepository.findAllByPost(post);
 

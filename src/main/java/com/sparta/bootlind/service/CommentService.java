@@ -51,9 +51,9 @@ public class CommentService {
 
         Comment comment = findComment(id);
         if (!comment.getUser().getUsername().equals(user.getUsername()))
-            throw new IllegalArgumentException("댓글 작성자만 삭제할 수 있습니다.");
+            return"댓글 작성자만 삭제할 수 있습니다.";
         commentRepository.delete(comment);
-        return id + ": 삭제 완료했습니다";
+        return "삭제 완료했습니다";
     }
 
     public Comment findComment(Long id) {
