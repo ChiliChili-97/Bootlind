@@ -49,7 +49,7 @@ public class HomeController {
             return "redirect:/signup";
         }
 
-        userService.signup(requestDto);
+        userService.signup(requestDto, bindingResult);
 
         return "redirect:/login";
     }

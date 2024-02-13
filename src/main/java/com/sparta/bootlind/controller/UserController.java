@@ -28,13 +28,13 @@ public class UserController {
 //    @Secured(UserRoleEnum.Authority.ADMIN) 어드민 권한 활성화 어노테이션
 
     // 회원가입 컨트롤러
-    @PostMapping("/signup")
-    @Operation(summary = "회원가입", description = "회원가입 요청을 허가한다.")
-    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest requestDto, BindingResult bindingResult) {
-        SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
-        userService.signup(requestDto, bindingResult);
-        return ResponseEntity.ok().body(responseDto);
-    }
+//    @PostMapping("/signup")
+//    @Operation(summary = "회원가입", description = "회원가입 요청을 허가한다.")
+//    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest requestDto, BindingResult bindingResult) {
+//        SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
+//        userService.signup(requestDto, bindingResult);
+//        return ResponseEntity.ok().body(responseDto);
+//    }
 
     @PostMapping("/follows/{userid}")
     @Operation(summary = "팔로우(userid)", description = "다른 사용자를 팔로우/언팔로우 한다.")

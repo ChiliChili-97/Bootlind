@@ -15,6 +15,7 @@ public class PostResponse {
     private String category;
     private String nickname;
     private LocalDateTime createdAt;
+    private Integer likescnt;
 
     public PostResponse(Post post, String nickname) {
         this.id = post.getId();
@@ -23,5 +24,6 @@ public class PostResponse {
         this.content = post.getContent();
         this.nickname = nickname;
         this.createdAt = post.getCreatedAt();
+        this.likescnt = post.getLikescnt();
     }
 }

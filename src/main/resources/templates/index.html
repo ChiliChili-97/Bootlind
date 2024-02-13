@@ -13,8 +13,14 @@
 <button id="logout-btn">로그아웃</button>
 
 <!-- 검색 기능 -->
-<input type="text" id="search-input" placeholder="게시글 검색">
+<select id='search-option' name = 'WhichSearch'>
+    <option id = 'title' value = 'title'>제목</option>
+    <option id = 'category' value = 'category'>카테고리</option>
+    <option id = 'userid' value = 'userid'>사용자</option>
+</select>
+<input type="text" id="search-input" placeholder="검색">
 <button id="search-btn">검색</button>
+<button id="total-btn">전체</button>
 
 <ul id="post-list"></ul>
 
