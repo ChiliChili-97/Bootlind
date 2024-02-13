@@ -39,7 +39,7 @@ public class CommentService {
 
         Comment comment = findComment(id);
         if (!comment.getUser().getUsername().equals(user.getUsername()))
-            throw new IllegalArgumentException("댓글 작성자만 삭제할 수 있습니다.");
+            throw new IllegalArgumentException("댓글 작성자만 수정할 수 있습니다.");
         comment.update(request);
         return new CommentResponse(comment, user.getNickname());
     }

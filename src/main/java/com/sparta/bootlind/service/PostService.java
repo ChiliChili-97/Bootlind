@@ -84,6 +84,10 @@ public class PostService {
         if (!post.getUser().getUsername().equals(user.getUsername()))
             throw new IllegalArgumentException("게시글을 수정할 권한이 없습니다.");
 
+        categoryRepository.findByCategory(postRequest.getCategory()).orElseThrow(
+                ()-> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다")
+        );
+
         post.update(postRequest);
 
         if (!post.getUser().getStatus().equals("ACTIVATED"))
