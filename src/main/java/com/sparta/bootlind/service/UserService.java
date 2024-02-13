@@ -8,7 +8,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -65,16 +64,16 @@ public class UserService {
     }
 
     @Transactional
-    public String followById(Long id, User user) {
+    public String followByNickname(String nickname, User user) {
         User userfollow = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
         );
-        User target = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
+        User target = userRepository.findByNickname(nickname).orElseThrow(
+                () -> new IllegalArgumentException("해당 nickname의 사용자가 존재하지 않습니다.")
         );
 
 
-        return userfollow.follow(id);
+        return userfollow.follow(target.getId());
     }
 
     public String deactivateUser(User user) {

@@ -20,6 +20,9 @@ $(document).ready(function () {
                 case 'category':
                     searchPostByCategory(searchInput);
                     break;
+                case 'nickname':
+                    searchPostByNickname(searchInput);
+                    break;
                 default :
                     getPostList();
             }
@@ -32,6 +35,10 @@ $(document).ready(function () {
         getPostList();
     });
 
+    $('#follower-btn').on('click', function () {
+        getPostListByFollower();
+    });
+
     // 페이지 로드 시 게시글 목록 가져오기
     getPostList();
 
@@ -40,6 +47,24 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             url: "/posts",
+            headers: {
+                Authorization: token
+            },
+            success: function (response) {
+                displayPosts(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("게시글 목록을 불러오는데 실패했습니다.");
+            }
+        });
+    }
+
+    function getPostListByFollower() {
+        // 게시글 목록 가져오는 AJAX 요청
+        $.ajax({
+            type: "GET",
+            url: "/posts/folllowers",
             headers: {
                 Authorization: token
             },
@@ -88,9 +113,27 @@ $(document).ready(function () {
         });
     }
 
+    function searchPostByNickname(nickname) {
+        $.ajax({
+            type: "GET",
+            url: "/posts/users/" + nickname,
+            headers: {
+                Authorization: token
+            },
+            success: function (response) {
+                displayPosts(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("게시글을 검색하는데 실패했습니다.");
+            }
+        });
+    }
+
     // 게시글을 화면에 출력하는 함수
     function displayPosts(posts) {
         $('#post-list').empty();
+        $('#comment-list').empty(); // 기존의 댓글 목록을 지움
         posts.forEach(function (post) {
             const card = `
             <li class="card" data-post-id="${post.id}">
@@ -139,9 +182,9 @@ $(document).ready(function () {
         <h1>${post.title}</h1>
         <h3>카테고리: ${post.category}</h3>
         <h3>게시글 ID : ${post.id}</h3>
-        <p>작성자: ${post.nickname}</p>
+        <p>작성자: ${post.nickname}<button id="follow-btn">팔로우</button></p>
         <p>${post.content}</p>
-        <p>좋아요: ${post.likescnt}</p>
+        <p>좋아요: <span id="like-count">${post.likescnt}</span> <button id="like-btn">좋아요</button></p>
     </li>`;
         $('#post-list').append(card);
 
@@ -166,6 +209,52 @@ $(document).ready(function () {
                 submitComment(postId, commentData);
             }
         });
+        $('#like-btn').on('click', function () {
+            submitLike(post.id);
+        });
+
+        // 팔로우 버튼에 클릭 이벤트 핸들러 등록
+        $('#follow-btn').on('click', function () {
+            submitFollow(post.nickname);
+        });
+    }
+
+    function submitLike(postId) {
+        $.ajax({
+            type: "POST",
+            url: `/posts/likes/` + postId,
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            success: function (response) {
+                alert(response);
+                getPostById(postId)
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("좋아요에 실패했습니다.");
+            }
+        });
+    }
+
+    function submitFollow(nickname) {
+        $.ajax({
+            type: "POST",
+            url: `/follows/` + nickname,
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            success: function (response) {
+                alert(response);
+                getPostById(postId)
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("팔로우에 실패했습니다.");
+            }
+        });
     }
 
     // 특정 게시글의 댓글을 가져오는 함수
@@ -177,7 +266,7 @@ $(document).ready(function () {
                 Authorization: token
             },
             success: function (response) {
-                displayComments(response);
+                displayComments(response, postId);
             },
             error: function (xhr, status, error) {
                 console.error(error);
@@ -187,16 +276,47 @@ $(document).ready(function () {
     }
 
 // 댓글을 화면에 출력하는 함수
-    function displayComments(comments) {
+    function displayComments(comments, postId) {
         $('#comment-list').empty();
         comments.forEach(function (comment) {
             const card = `
         <li class="card" data-comment-id="${comment.id}">
-            <p>작성자: ${comment.nickname}</p>
+            <p>작성자: ${comment.nickname} <button class="follow-btn" data-nickname="${comment.nickname}">팔로우</button></p>
             <p>${comment.content}</p>
-            <p>좋아요: ${comment.likescnt}</p>
+            <p>좋아요: <span id="like-count-${comment.id}">${comment.likescnt}</span> <button class="comment-like-btn" data-comment-id="${comment.id}">좋아요</button></p>
+            
         </li>`;
             $('#comment-list').append(card);
+        });
+
+        $('.comment-like-btn').on('click', function () {
+            const commentId = $(this).data('comment-id');
+            submitCommentLike(commentId, postId);
+        });
+
+        // 댓글 작성자를 팔로우하는 버튼에 클릭 이벤트 핸들러 등록
+        $('.follow-btn').on('click', function () {
+            const nickname = $(this).data('nickname');
+            submitFollow(nickname);
+        });
+    }
+
+    function submitCommentLike(commentId, postId) {
+        $.ajax({
+            type: "POST",
+            url: `/comments/likes/` + commentId,
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            success: function (response) {
+                alert(response);
+                getPostById(postId);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("좋아요에 실패했습니다.");
+            }
         });
     }
 

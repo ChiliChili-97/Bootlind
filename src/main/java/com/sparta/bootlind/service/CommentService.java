@@ -72,7 +72,7 @@ public class CommentService {
         Comment comment = findComment(id);
 
         if (comment.getUser().getUsername().equals(user.getUsername()))
-            throw new IllegalArgumentException("자신의 댓글에는 좋아요를 할 수 없습니다.");
+            return "자신의 댓글에는 좋아요를 할 수 없습니다.";
 
         String like = "/" + user.getId();
         String likes = comment.getLikes();
@@ -81,13 +81,13 @@ public class CommentService {
             comment.setLikes(likes);
             List<String> list = Arrays.asList(likes.split("/"));
             comment.setLikescnt(list.size() - 1);
-            return "댓글에 좋아요를 취소합니다." + comment.getLikes() + " 좋아요 수: " + comment.getLikescnt();
+            return "댓글에 좋아요를 취소합니다.";
         } else {
             likes = like.concat(likes);
             comment.setLikes(likes);
             List<String> list = Arrays.asList(likes.split("/"));
             comment.setLikescnt(list.size() - 1);
-            return "댓글에 좋아요를 누르셨습니다" + comment.getLikes() + " 좋아요 수: " + comment.getLikescnt();
+            return "댓글에 좋아요를 누르셨습니다";
         }
     }
 

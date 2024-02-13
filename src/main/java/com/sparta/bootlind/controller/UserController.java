@@ -1,7 +1,6 @@
 package com.sparta.bootlind.controller;
 
 import com.sparta.bootlind.dto.requestDto.*;
-import com.sparta.bootlind.dto.responseDto.SignupResponse;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.security.UserDetailsImpl;
 import com.sparta.bootlind.service.UserService;
@@ -9,14 +8,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -36,10 +30,10 @@ public class UserController {
 //        return ResponseEntity.ok().body(responseDto);
 //    }
 
-    @PostMapping("/follows/{userid}")
-    @Operation(summary = "팔로우(userid)", description = "다른 사용자를 팔로우/언팔로우 한다.")
-    public String followById(@PathVariable Long userid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.followById(userid, userDetails.getUser());
+    @PostMapping("/follows/{nickname}")
+    @Operation(summary = "팔로우(nickname)", description = "다른 사용자를 팔로우/언팔로우 한다.")
+    public String followByNickname(@PathVariable String nickname, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.followByNickname(nickname, userDetails.getUser());
     }
 
     @PostMapping("/users/{userid}/access")
