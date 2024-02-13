@@ -1,6 +1,7 @@
 package com.sparta.bootlind.service;
 
 import com.sparta.bootlind.dto.requestDto.*;
+import com.sparta.bootlind.dto.responseDto.InfoResponse;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.repository.UserRepository;
@@ -217,5 +218,13 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         return "비밀번호가 일치합니다. 회원 정보로 이동합니다.";
+    }
+
+    public InfoResponse getUserInfo(User user) {
+        User target = userRepository.findById(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
+        );
+
+        return new InfoResponse(target);
     }
 }

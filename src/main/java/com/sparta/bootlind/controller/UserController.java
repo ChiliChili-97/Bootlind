@@ -1,6 +1,8 @@
 package com.sparta.bootlind.controller;
 
 import com.sparta.bootlind.dto.requestDto.*;
+import com.sparta.bootlind.dto.responseDto.InfoResponse;
+import com.sparta.bootlind.dto.responseDto.UserInfoResponse;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.security.UserDetailsImpl;
 import com.sparta.bootlind.service.UserService;
@@ -91,4 +93,9 @@ public class UserController {
         return userService.updatePassword(request, userDetails.getUser());
     }
 
+    @GetMapping("/users/getuserinfo")
+    @Operation(summary = "회원정보 조회", description = "회원정보를 조회한다")
+    public InfoResponse getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.getUserInfo(userDetails.getUser());
+    }
 }

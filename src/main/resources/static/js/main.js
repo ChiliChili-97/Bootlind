@@ -8,6 +8,40 @@ $(document).ready(function () {
         window.location.href = '/login.html';
     });
 
+    $('#user-btn').on('click', function () {
+        getUserInfo();
+    });
+
+    function getUserInfo() {
+        $.ajax({
+            type: "GET",
+            url: "/users/getuserinfo",
+            headers: {
+                Authorization: token
+            },
+            success: function (user) {
+                displayUserInfo(user);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("사용자 정보를 가져오는데 실패했습니다.");
+            }
+        });
+    }
+
+    function displayUserInfo(user) {
+        const userInfo = `
+        <h2>사용자 정보</h2>
+        <p>ID: ${user.username}</p>
+        <p>닉네임: ${user.nickname}</p>
+        <p>프로필: ${user.profile}</p>
+        <p>역할: ${user.role}</p>
+        <p>상태: ${user.status}</p>
+        <p>팔로워 목록: ${user.followers.join(', ')}</p>
+        `;
+        $('#post-list').empty().append(userInfo);
+    }
+
     // 검색 버튼 클릭 시 검색어를 이용하여 게시글 검색
     $('#search-btn').on('click', function () {
         const searchInput = $('#search-input').val();
