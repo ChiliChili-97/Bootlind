@@ -177,4 +177,56 @@ $(document).ready(function () {
             $('#comment-list').append(card);
         });
     }
+
+    // 게시글 작성 버튼 클릭 시 게시글 작성 폼을 표시
+    $('#create-post-btn').on('click', function () {
+        // 게시글 작성 폼을 보여줄 HTML을 작성
+        const postForm = `
+    <form id="post-form">
+        <label for="create-title">제목:</label><br>
+        <input type="text" id="create-title" name="create-title"><br>
+        <label for="create-category">카테고리:</label><br>
+        <input type="text" id="create-category" name="create-category"><br><br>
+        <label for="content">내용:</label><br>
+        <textarea id="content" name="content"></textarea><br>
+        <button type="submit">작성 완료</button>
+    </form>`;
+
+        // 게시글 작성 폼을 표시할 위치에 추가
+        $('#post-list').prepend(postForm);
+
+        // 게시글 작성 폼이 제출되면 submitPost 함수 호출
+        $('#post-form').on('submit', function (event) {
+            event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+            const postData = {
+                title: $('#create-title').val(), // 변경된 부분
+                content: $('#content').val(),
+                category: $('#create-category').val()
+            };
+            submitPost(postData);
+        });
+    });
+
+
+    // 게시글 작성 요청을 서버에 전송하는 함수
+    function submitPost(postData) {
+        $.ajax({
+            type: "POST",
+            url: "/posts",
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(postData),
+            success: function (response) {
+                alert("게시글이 작성되었습니다.");
+                // 작성 완료 후 게시글 목록 다시 불러오기
+                getPostList();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("게시글 작성에 실패했습니다.");
+            }
+        });
+    }
 });
