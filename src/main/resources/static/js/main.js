@@ -135,15 +135,37 @@ $(document).ready(function () {
     function displayPostDetail(post) {
         $('#post-list').empty();
         const card = `
-        <li class="card">
-            <h1>${post.title}</h1>
-            <h3>카테고리: ${post.category}</h3>
-            <h3>게시글 ID : ${post.id}</h3>
-            <p>작성자: ${post.nickname}</p>
-            <p>${post.content}</p>
-            <p>좋아요: ${post.likescnt}</p>
-        </li>`;
+    <li class="card">
+        <h1>${post.title}</h1>
+        <h3>카테고리: ${post.category}</h3>
+        <h3>게시글 ID : ${post.id}</h3>
+        <p>작성자: ${post.nickname}</p>
+        <p>${post.content}</p>
+        <p>좋아요: ${post.likescnt}</p>
+    </li>`;
         $('#post-list').append(card);
+
+        // 댓글 입력 폼 추가
+        const commentForm = `
+    <form id="comment-form">
+        <label for="comment-content">댓글 작성:</label><br>
+        <textarea id="comment-content" name="comment-content"></textarea><br>
+        <button type="button" id="submit-comment">댓글 작성</button>
+    </form>`;
+        $('#post-list').append(commentForm);
+
+        // 댓글 작성 버튼에 클릭 이벤트 핸들러 등록
+        $('#submit-comment').on('click', function () {
+            const commentContent = $('#comment-content').val();
+            const postId = post.id; // 현재 게시글의 ID 가져오기
+
+            if (commentContent.trim() !== '') {
+                const commentData = {
+                    content: commentContent
+                };
+                submitComment(postId, commentData);
+            }
+        });
     }
 
     // 특정 게시글의 댓글을 가져오는 함수
@@ -169,12 +191,34 @@ $(document).ready(function () {
         $('#comment-list').empty();
         comments.forEach(function (comment) {
             const card = `
-            <li class="card" data-comment-id="${comment.id}">
-                <p>작성자: ${comment.nickname}</p>
-                <p>${comment.content}</p>
-                <p>좋아요: ${comment.likescnt}</p>
-            </li>`;
+        <li class="card" data-comment-id="${comment.id}">
+            <p>작성자: ${comment.nickname}</p>
+            <p>${comment.content}</p>
+            <p>좋아요: ${comment.likescnt}</p>
+        </li>`;
             $('#comment-list').append(card);
+        });
+    }
+
+// 댓글을 서버에 전송하는 함수
+    function submitComment(postId, commentData) {
+        $.ajax({
+            type: "POST",
+            url: `/comments/` + postId,
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(commentData),
+            success: function (response) {
+                alert("댓글이 작성되었습니다.");
+                // 댓글 작성 완료 후 댓글 목록 다시 불러오기
+                getComments(postId);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("댓글 작성에 실패했습니다.");
+            }
         });
     }
 
