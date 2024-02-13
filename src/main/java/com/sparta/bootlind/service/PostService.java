@@ -108,7 +108,7 @@ public class PostService {
         return postResponseList;
     }
 
-    public PostResponse getPostById(Long id, User user) {
+    public PostResponse getPostByUserId(Long id, User user) {
         if (!user.getStatus().equals("ACTIVATED"))
             throw new IllegalArgumentException("활성화 상태인 사용자만 가능합니다.");
 
@@ -225,5 +225,18 @@ public class PostService {
             }
         }
         return postResponseList;
+    }
+
+    public PostResponse getPostByPostId(Long id, User user) {
+        if (!user.getStatus().equals("ACTIVATED"))
+            throw new IllegalArgumentException("활성화 상태인 사용자만 가능합니다.");
+
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 게시글이 없습니다.")
+        );
+        if (!post.getUser().getStatus().equals("ACTIVATED"))
+            return new PostResponse(post, "알수없음");
+        else
+            return new PostResponse(post, post.getUser().getNickname());
     }
 }

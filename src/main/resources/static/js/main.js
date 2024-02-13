@@ -93,14 +93,54 @@ $(document).ready(function () {
         $('#post-list').empty();
         posts.forEach(function (post) {
             const card = `
-            <li class="card">
-                <h1>${post.title}</h1   >
+            <li class="card" data-post-id="${post.id}">
+                <h1>${post.title}</h1>
                 <h3>${post.category}</h3>
+                <h3>${post.id}</h3>
                 <p>작성자: ${post.nickname}</p>
                 <p>${post.content}</p>
                 <p>좋아요: ${post.likescnt}</p>
             </li>`;
             $('#post-list').append(card);
         });
+
+        // 각 게시글에 클릭 이벤트 추가
+        $('.card').on('click', function () {
+            const postId = $(this).data('post-id');
+            getPostById(postId);
+        });
+    }
+
+    // 특정 게시글의 상세 정보를 가져와서 출력하는 함수
+    function getPostById(postId) {
+        $.ajax({
+            type: "GET",
+            url: "/posts/" + postId,
+            headers: {
+                Authorization: token
+            },
+            success: function (response) {
+                displayPostDetail(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("게시글을 가져오는데 실패했습니다.");
+            }
+        });
+    }
+
+    // 특정 게시글의 상세 정보를 화면에 출력하는 함수
+    function displayPostDetail(post) {
+        $('#post-list').empty();
+        const card = `
+        <li class="card">
+            <h1>${post.title}</h1>
+            <h3>${post.category}</h3>
+            <h3>${post.id}</h3>
+            <p>작성자: ${post.nickname}</p>
+            <p>${post.content}</p>
+            <p>좋아요: ${post.likescnt}</p>
+        </li>`;
+        $('#post-list').append(card);
     }
 });
