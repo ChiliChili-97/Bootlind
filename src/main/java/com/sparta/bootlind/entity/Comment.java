@@ -41,6 +41,7 @@ public class Comment extends TimeStamped {
         this.post = post;
         this.content = request.getContent();
         this.likes = "";
+        this.likescnt=0;
     }
 
     public void update(CommentRequest request) {

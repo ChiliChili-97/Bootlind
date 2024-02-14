@@ -21,7 +21,7 @@ public class CommentController {
 
     @PostMapping("/comments/{postid}")
     @Operation(summary = "댓글 작성", description = "댓글을 작성한다.")
-    public CommentResponse createComment(@RequestParam Long postid, @RequestBody CommentRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public CommentResponse createComment(@PathVariable Long postid, @RequestBody CommentRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.createComment(postid, request, userDetails.getUser());
     }
 
@@ -45,7 +45,7 @@ public class CommentController {
 
     @GetMapping("/comments/{postid}")
     @Operation(summary = "댓글 목록 조회", description = "댓글 목록을 조회한다.")
-    public List<CommentResponse> getCommentList(@RequestParam Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public List<CommentResponse> getCommentList(@PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.getCommentList(postid, userDetails.getUser());
     }
 

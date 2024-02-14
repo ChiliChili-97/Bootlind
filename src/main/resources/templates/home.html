@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootlind</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <style>
+        #logout-btn {
+            float: right;
+        }
+        #user-btn {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<h1>Bootlind</h1>
+
+<!-- 로그아웃 버튼 -->
+<button id="user-btn">내 정보</button>
+<button id="logout-btn">로그아웃</button>
+
+<!-- 검색 기능 -->
+<select id='search-option' name='WhichSearch'>
+    <option id='title' value='title'>제목</option>
+    <option id='category' value='category'>카테고리</option>
+    <option id='nickname' value='nickname'>작성자</option>
+</select>
+<input type="text" id="search-input" placeholder="검색">
+<button id="search-btn">검색</button>
+<button id="total-btn">전체</button>
+<button id="follower-btn">팔로워</button>
+
+<!-- 게시글 작성 버튼 -->
+<button id="create-post-btn">게시글 작성</button>
+<button id="create-category-btn">카테고리 추가</button>
+
+<ul id="post-list"></ul>
+<ul id="comment-list"></ul>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>

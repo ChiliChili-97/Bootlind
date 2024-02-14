@@ -45,6 +45,7 @@ public class Post extends TimeStamped {
         this.category = postRequest.getCategory();
         this.user = user;
         this.postLikes = "";
+        likescnt = 0;
     }
 
     public void update(PostRequest postRequest) {

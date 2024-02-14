@@ -66,14 +66,14 @@ public class User {
         if (this.getId() == Id) {
             return "자신을 팔로우 할 수 없습니다.";
         }
-        String follower = this.getFollow();
+        String follower = this.follow;
         String userId = "/" + Id;
         if (follower.contains(userId)) {
             this.follow = this.follow.replace(userId, "");
-            return "언팔로우 되었습니다." + Arrays.toString(getFollwers());
+            return "언팔로우 되었습니다.";
         } else {
             this.follow = this.follow.concat(userId);
-            return "팔로우 되었습니다." + Arrays.toString(getFollwers());
+            return "팔로우 되었습니다.";
         }
     }
 

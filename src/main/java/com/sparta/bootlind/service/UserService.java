@@ -1,6 +1,7 @@
 package com.sparta.bootlind.service;
 
 import com.sparta.bootlind.dto.requestDto.*;
+import com.sparta.bootlind.dto.responseDto.InfoResponse;
 import com.sparta.bootlind.entity.User;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.repository.UserRepository;
@@ -8,7 +9,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -65,18 +65,19 @@ public class UserService {
     }
 
     @Transactional
-    public String followById(Long id, User user) {
+    public String followByNickname(String nickname, User user) {
         User userfollow = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
         );
-        User target = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 사용자가 존재하지 않습니다.")
+        User target = userRepository.findByNickname(nickname).orElseThrow(
+                () -> new IllegalArgumentException("해당 nickname의 사용자가 존재하지 않습니다.")
         );
 
 
-        return userfollow.follow(id);
+        return userfollow.follow(target.getId());
     }
 
+    @Transactional
     public String deactivateUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -94,6 +95,7 @@ public class UserService {
         return "비활성화 상태로 변경되었습니다.";
     }
 
+    @Transactional
     public String activateUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -111,6 +113,7 @@ public class UserService {
         return "활성화 상태로 변경되었습니다.";
     }
 
+    @Transactional
     public String deleteUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -124,6 +127,7 @@ public class UserService {
         return "탈퇴 상태로 변경되었습니다";
     }
 
+    @Transactional
     public String restoreUser(Long id, SignupRequest requestDto, User user) {
 
         //if(user!=관리자)
@@ -154,6 +158,7 @@ public class UserService {
         return "복구 되었습니다.";
     }
 
+    @Transactional
     public String updateUsername(UpdateUsernameRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -169,6 +174,7 @@ public class UserService {
         return "수정 되었습니다.";
     }
 
+    @Transactional
     public String updateNickname(UpdateNicknameRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -184,16 +190,18 @@ public class UserService {
         return "수정 되었습니다.";
     }
 
-    public String updateProfile(String profile, User user) {
+    @Transactional
+    public String updateProfile(UpdateProfileRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
-        target.updateProfile(profile);
+        target.updateProfile(request.getProfile());
 
         return "수정 되었습니다.";
     }
 
+    @Transactional
     public String updatePassword(UpdatePasswordRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -218,5 +226,19 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         return "비밀번호가 일치합니다. 회원 정보로 이동합니다.";
+    }
+
+    public InfoResponse getUserInfo(User user) {
+        User target = userRepository.findById(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
+        );
+
+        String[] follwernumbers = target.getFollwers();
+        String[] follwers = new String[target.getFollwers().length];
+        for(int i=0; i<follwernumbers.length;i++) {
+            follwers[i] = userRepository.findById(Long.parseLong(follwernumbers[i])).orElseThrow(()-> new IllegalArgumentException("없음.")).getNickname();
+        }
+
+        return new InfoResponse(target,follwers);
     }
 }

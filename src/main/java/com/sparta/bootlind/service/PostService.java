@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -83,6 +84,10 @@ public class PostService {
         if (!post.getUser().getUsername().equals(user.getUsername()))
             throw new IllegalArgumentException("게시글을 수정할 권한이 없습니다.");
 
+        categoryRepository.findByCategory(postRequest.getCategory()).orElseThrow(
+                ()-> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다")
+        );
+
         post.update(postRequest);
 
         if (!post.getUser().getStatus().equals("ACTIVATED"))
@@ -108,29 +113,36 @@ public class PostService {
         return postResponseList;
     }
 
-    public PostResponse getPostById(Long id, User user) {
+    public List<PostResponse> getPostByUserNickname(String nickname, User user) {
         if (!user.getStatus().equals("ACTIVATED"))
             throw new IllegalArgumentException("활성화 상태인 사용자만 가능합니다.");
 
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 게시글이 없습니다.")
+        User target = userRepository.findByNickname(nickname).orElseThrow(
+                ()-> new IllegalArgumentException("해당 닉네임의 사용자가 존재하지 않습니다.")
         );
-        if (!post.getUser().getStatus().equals("ACTIVATED"))
-            return new PostResponse(post, "알수없음");
-        else
-            return new PostResponse(post, post.getUser().getNickname());
+
+        List<Post> postList = postRepository.findAllByUser(target);
+        List<PostResponse> postResponseList = new ArrayList<>();
+
+        for (Post post : postList) {
+            if (!post.getUser().getStatus().equals("ACTIVATED"))
+                postResponseList.add(new PostResponse(post, "알수없음"));
+            else
+                postResponseList.add(new PostResponse(post, post.getUser().getNickname()));
+        }
+        return postResponseList;
     }
 
     public String deletePost(Long id, User user) {
         if (!user.getStatus().equals("ACTIVATED"))
-            throw new IllegalArgumentException("활성화 상태인 사용자만 가능합니다.");
+            return "활성화 상태인 사용자만 가능합니다.";
 
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 게시글이 없습니다.")
         );
 
         if (!post.getUser().getUsername().equals(user.getUsername()))
-            throw new IllegalArgumentException("게시글 작성자만 삭제할 수 있습니다.");
+            return "게시글 작성자만 삭제할 수 있습니다.";
 
         List<Comment> commentList = commentRepository.findAllByPost(post);
 
@@ -153,7 +165,7 @@ public class PostService {
         );
 
         if (post.getUser().getUsername().equals(user.getUsername()))
-            throw new IllegalArgumentException("자신의 게시물에는 좋아요를 할 수 없습니다.");
+            return "자신의 게시물에는 좋아요를 할 수 없습니다.";
 
         String like = "/" + user.getId();
         String likes = post.getPostLikes();
@@ -162,13 +174,13 @@ public class PostService {
             post.setPostLikes(likes);
             List<String> list = Arrays.asList(likes.split("/"));
             post.setLikescnt(list.size() - 1);
-            return "게시물에 좋아요를 취소합니다." + post.getPostLikes() + " 좋아요 수: " + post.getLikescnt();
+            return "게시물에 좋아요를 취소합니다.";
         } else {
             likes = like.concat(likes);
             post.setPostLikes(likes);
             List<String> list = Arrays.asList(likes.split("/"));
             post.setLikescnt(list.size() - 1);
-            return "게시물에 좋아요를 누르셨습니다" + post.getPostLikes() + " 좋아요 수: " + post.getLikescnt();
+            return "게시물에 좋아요를 누르셨습니다";
         }
     }
 
@@ -225,5 +237,18 @@ public class PostService {
             }
         }
         return postResponseList;
+    }
+
+    public PostResponse getPostByPostId(Long id, User user) {
+        if (!user.getStatus().equals("ACTIVATED"))
+            throw new IllegalArgumentException("활성화 상태인 사용자만 가능합니다.");
+
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 게시글이 없습니다.")
+        );
+        if (!post.getUser().getStatus().equals("ACTIVATED"))
+            return new PostResponse(post, "알수없음");
+        else
+            return new PostResponse(post, post.getUser().getNickname());
     }
 }

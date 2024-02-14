@@ -28,7 +28,7 @@ public class CategoryController {
         return categoryService.getCategoryList(userDetails.getUser());
     }
 
-    @PreAuthorize(UserRoleEnum.Authority.ADMIN)
+    //@PreAuthorize(UserRoleEnum.Authority.ADMIN)
     @PostMapping("/categories")
     @Operation(summary = "카테고리 추가(관리자)", description = "카테고리를 추가한다.")
     public String addCategory(@RequestBody @Valid CategoryRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {

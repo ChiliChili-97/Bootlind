@@ -14,6 +14,7 @@ public class CommentResponse {
     private String content;
     private String nickname;
     private LocalDateTime createdAt;
+    private Integer likescnt;
 
     public CommentResponse(Comment comment, String nickname) {
         this.id = comment.getId();
@@ -21,5 +22,6 @@ public class CommentResponse {
         this.content = comment.getContent();
         this.nickname = nickname;
         this.createdAt = comment.getCreatedAt();
+        this.likescnt = comment.getLikescnt();
     }
 }

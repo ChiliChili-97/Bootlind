@@ -31,10 +31,16 @@ public class PostController {
         return postService.getPostList(userDetails.getUser());
     }
 
-    @GetMapping("/posts/users/{userid}")
-    @Operation(summary = "게시글 조회 (ID)", description = "사용자 ID를 사용해 게시글을 조회한다.")
-    public PostResponse getPostById(@PathVariable Long userid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.getPostById(userid, userDetails.getUser());
+    @GetMapping("/posts/{postid}")
+    @Operation(summary = "게시글 조회 (게시글 ID)", description = "게시글 ID를 사용해 게시글을 조회한다.")
+    public PostResponse getPostByPostId(@PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.getPostByPostId(postid,userDetails.getUser());
+    }
+
+    @GetMapping("/posts/users/{nickname}")
+    @Operation(summary = "게시글 조회 (사용자 Nickname)", description = "사용자 Nickname을 사용해 게시글을 조회한다.")
+    public List<PostResponse> getPostByUserNickname(@PathVariable String nickname, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.getPostByUserNickname(nickname, userDetails.getUser());
     }
 
     @GetMapping("/posts/titles/{title}")

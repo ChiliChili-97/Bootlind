@@ -1,7 +1,8 @@
 package com.sparta.bootlind.controller;
 
 import com.sparta.bootlind.dto.requestDto.*;
-import com.sparta.bootlind.dto.responseDto.SignupResponse;
+import com.sparta.bootlind.dto.responseDto.InfoResponse;
+import com.sparta.bootlind.dto.responseDto.UserInfoResponse;
 import com.sparta.bootlind.entity.UserRoleEnum;
 import com.sparta.bootlind.security.UserDetailsImpl;
 import com.sparta.bootlind.service.UserService;
@@ -9,10 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,18 +24,18 @@ public class UserController {
 //    @Secured(UserRoleEnum.Authority.ADMIN) 어드민 권한 활성화 어노테이션
 
     // 회원가입 컨트롤러
-    @PostMapping("/signup")
-    @Operation(summary = "회원가입", description = "회원가입 요청을 허가한다.")
-    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest requestDto, BindingResult bindingResult) {
-        SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
-        userService.signup(requestDto, bindingResult);
-        return ResponseEntity.ok().body(responseDto);
-    }
+//    @PostMapping("/signup")
+//    @Operation(summary = "회원가입", description = "회원가입 요청을 허가한다.")
+//    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest requestDto, BindingResult bindingResult) {
+//        SignupResponse responseDto = new SignupResponse("회원가입 성공", 201);
+//        userService.signup(requestDto, bindingResult);
+//        return ResponseEntity.ok().body(responseDto);
+//    }
 
-    @PostMapping("/follows/{userid}")
-    @Operation(summary = "팔로우(userid)", description = "다른 사용자를 팔로우/언팔로우 한다.")
-    public String followById(@PathVariable Long userid, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.followById(userid, userDetails.getUser());
+    @PostMapping("/follows/{nickname}")
+    @Operation(summary = "팔로우(nickname)", description = "다른 사용자를 팔로우/언팔로우 한다.")
+    public String followByNickname(@PathVariable String nickname, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.followByNickname(nickname, userDetails.getUser());
     }
 
     @PostMapping("/users/{userid}/access")
@@ -82,10 +81,10 @@ public class UserController {
         return userService.updateNickname(request, userDetails.getUser());
     }
 
-    @PutMapping("/users/updates/profile/{profile}")
+    @PutMapping("/users/updates/profile")
     @Operation(summary = "회원정보 수정(profile)", description = "회원의 profile을 변경한다.")
-    public String updateProfile(@PathVariable String profile, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.updateProfile(profile, userDetails.getUser());
+    public String updateProfile(@RequestBody UpdateProfileRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.updateProfile(request, userDetails.getUser());
     }
 
     @PutMapping("/users/updates/password")
@@ -94,4 +93,9 @@ public class UserController {
         return userService.updatePassword(request, userDetails.getUser());
     }
 
+    @GetMapping("/users/getuserinfo")
+    @Operation(summary = "회원정보 조회", description = "회원정보를 조회한다")
+    public InfoResponse getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.getUserInfo(userDetails.getUser());
+    }
 }
