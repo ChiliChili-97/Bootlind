@@ -235,6 +235,7 @@ public class UserService {
 
         String[] follwernumbers = target.getFollwers();
         String[] follwers = new String[target.getFollwers().length];
+        if(follwernumbers.length>1)
         for(int i=0; i<follwernumbers.length;i++) {
             follwers[i] = userRepository.findById(Long.parseLong(follwernumbers[i])).orElseThrow(()-> new IllegalArgumentException("없음.")).getNickname();
         }
