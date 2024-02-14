@@ -851,7 +851,7 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(categoryData),
             success: function (response) {
-                alert("카테고리가 추가되었습니다.");
+                alert(response);
                 // 작성 완료 후 게시글 목록 다시 불러오기
                 getPostList();
             },
