@@ -154,7 +154,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("비활성화 하는데 실패했습니다.");
+                alert("ID 변경에 실패했습니다.");
             }
         });
     }
@@ -174,7 +174,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("비활성화 하는데 실패했습니다.");
+                alert("닉네임 변경에 실패했습니다.");
             }
         });
     }
@@ -194,7 +194,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("변경 하는데 실패했습니다.");
+                alert("프로필 변경에 실패했습니다.");
             }
         });
     }
@@ -215,7 +215,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("비활성화 하는데 실패했습니다.");
+                alert("비밀번호 변경에 실패했습니다.");
             }
         });
     }
@@ -235,7 +235,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("비활성화 하는데 실패했습니다.");
+                alert("활성화에 실패했습니다.");
             }
         });
     }
@@ -256,7 +256,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("비활성화 하는데 실패했습니다.");
+                alert("비활성화에 실패했습니다.");
             }
         });
     }
@@ -276,7 +276,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("비활성화 하는데 실패했습니다.");
+                alert("탈퇴에 실패했습니다.");
             }
         });
     }
@@ -348,7 +348,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("게시글 목록을 불러오는데 실패했습니다.");
+                alert("팔로워 게시글 목록을 불러오는데 실패했습니다.");
             }
         });
     }
@@ -563,7 +563,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error(error);
-                alert("좋아요에 실패했습니다.");
+                alert("게시글 삭제에 실패했습니다.");
             }
         });
     }
