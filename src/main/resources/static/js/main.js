@@ -33,16 +33,254 @@ $(document).ready(function () {
         $('#post-list').empty();
         $('#comment-list').empty(); // 기존의 댓글 목록을 지움
         const userInfo = `
-        <h2>사용자 정보</h2>
-        <p>ID: ${user.username}</p>
-        <p>닉네임: ${user.nickname}</p>
-        <p>프로필: ${user.profile}</p>
+        <h2>사용자 정보<button id="activate-btn">활성화</button><button id="deactivate-btn">비활성화</button><button id="delete-user-btn">회원탈퇴</button></h2>
+        <p>ID: ${user.username}<button id="update-username-btn">수정하기</button></p>
+        <p>닉네임: ${user.nickname}<button id="update-nickname-btn">수정하기</button></p>
+        <p>프로필: ${user.profile}<button id="update-profile-btn">수정하기</button></p>
         <p>역할: ${user.role}</p>
         <p>상태: ${user.status}</p>
         <p>팔로우 한 유저 목록: ${user.followers.join(', ')}</p>
+        <p><button id="update-password-btn">비밀번호 변경</button></p>
         `;
         $('#post-list').empty().append(userInfo);
+        $('#activate-btn').on('click', function () {
+            activateUser();
+        });
+        $('#deactivate-btn').on('click', function () {
+            deactivateUser();
+        });
+        $('#delete-user-btn').on('click', function () {
+            deleteUser();
+        });
+        $('#update-username-btn').on('click', function () {
+            const postForm = `
+    <form id="username-update-form">
+        <label for="update-username">새로운 ID</label><br>
+        <input type="text" id="update-username" name="update-username"><br>
+        <button type="submit">수정 완료</button>
+    </form>`;
+            // 게시글 작성 폼을 표시할 위치에 추가
+            $('#post-list').append(postForm);
+            // 게시글 작성 폼이 제출되면 submitPost 함수 호출
+            $('#username-update-form').on('submit', function (event) {
+                event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+                const newUsername = $('#update-username').val();
+                if (newUsername.trim() !== '') {
+                    const UpdateData = {
+                        username: newUsername
+                    };
+                    updateUsername(UpdateData);
+                }
+            });
+        });
+        $('#update-nickname-btn').on('click', function () {
+            const postForm = `
+    <form id="nickname-update-form">
+        <label for="update-nickname">새로운 nickname</label><br>
+        <input type="text" id="update-nickname" name="update-nickname"><br>
+        <button type="submit">수정 완료</button>
+    </form>`;
+            // 게시글 작성 폼을 표시할 위치에 추가
+            $('#post-list').append(postForm);
+            // 게시글 작성 폼이 제출되면 submitPost 함수 호출
+            $('#nickname-update-form').on('submit', function (event) {
+                event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+                const newNickname = $('#update-nickname').val();
+                if (newNickname.trim() !== '') {
+                    const UpdateData = {
+                        nickname: newNickname
+                    };
+                    updateNickname(UpdateData);
+                }
+            });
+        });
+        $('#update-profile-btn').on('click', function () {
+            const postForm = `
+    <form id="profile-update-form">
+        <label for="update-profile">새로운 profile</label><br>
+        <input type="text" id="update-profile" name="update-profile"><br>
+        <button type="submit">수정 완료</button>
+    </form>`;
+            // 게시글 작성 폼을 표시할 위치에 추가
+            $('#post-list').append(postForm);
+            // 게시글 작성 폼이 제출되면 submitPost 함수 호출
+            $('#profile-update-form').on('submit', function (event) {
+                event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+                const newProfile = $('#update-profile').val();
+                if (newProfile.trim() !== '') {
+                    const UpdateData = {
+                        profile: newProfile
+                    };
+                    updateProfile(UpdateData);
+                }
+            });
+        });
+        $('#update-password-btn').on('click', function () {
+            const postForm = `
+    <form id="password-update-form">
+        <label for="old-password">기존 password</label><br>
+        <input type="password" id="old-password" name="old-password"><br>
+        <label for="new-password">새로운 password</label><br>
+        <input type="password" id="new-password" name="new-password"><br>
+        <button type="submit">수정 완료</button>
+    </form>`;
+            // 게시글 작성 폼을 표시할 위치에 추가
+            $('#post-list').append(postForm);
+            // 게시글 작성 폼이 제출되면 submitPost 함수 호출
+            $('#password-update-form').on('submit', function (event) {
+                event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+                    const UpdateData = {
+                        oldpassword: $('#old-password').val(),
+                        newpassword: $('#new-password').val()
+                    };
+                    updatePassword(UpdateData);
+            });
+        });
     }
+
+    function updateUsername(UpdateData) {
+        $.ajax({
+            type: "PUT",
+            url: "/users/updates/username",
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(UpdateData),
+            success: function (response) {
+                alert(response);
+                Cookies.remove('Authorization', {path: '/'});
+                window.location.href = '/login.html';
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("비활성화 하는데 실패했습니다.");
+            }
+        });
+    }
+
+    function updateNickname(UpdateData) {
+        $.ajax({
+            type: "PUT",
+            url: "/users/updates/nickname",
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(UpdateData),
+            success: function (response) {
+                alert(response);
+                getUserInfo();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("비활성화 하는데 실패했습니다.");
+            }
+        });
+    }
+
+    function updateProfile(UpdateData) {
+        $.ajax({
+            type: "PUT",
+            url: "/users/updates/profile",
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(UpdateData),
+            success: function (response) {
+                alert(response);
+                getUserInfo();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("변경 하는데 실패했습니다.");
+            }
+        });
+    }
+
+    function updatePassword(UpdateData) {
+        $.ajax({
+            type: "PUT",
+            url: "/users/updates/password",
+            headers: {
+                Authorization: token
+            },
+            contentType: 'application/json',
+            data: JSON.stringify(UpdateData),
+            success: function (response) {
+                alert(response);
+                Cookies.remove('Authorization', {path: '/'});
+                window.location.href = '/login.html';
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("비활성화 하는데 실패했습니다.");
+            }
+        });
+    }
+
+    function activateUser() {
+        // 게시글 목록 가져오는 AJAX 요청
+        $.ajax({
+            type: "PUT",
+            url: "/users/updates/activate",
+            headers: {
+                Authorization: token
+            },
+            success: function (response) {
+                alert(response);
+                Cookies.remove('Authorization', {path: '/'});
+                window.location.href = '/login.html';
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("비활성화 하는데 실패했습니다.");
+            }
+        });
+    }
+
+
+    function deactivateUser() {
+        // 게시글 목록 가져오는 AJAX 요청
+        $.ajax({
+            type: "PUT",
+            url: "/users/updates/deactivate",
+            headers: {
+                Authorization: token
+            },
+            success: function (response) {
+                alert(response);
+                Cookies.remove('Authorization', {path: '/'});
+                window.location.href = '/login.html';
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("비활성화 하는데 실패했습니다.");
+            }
+        });
+    }
+
+    function deleteUser() {
+        // 게시글 목록 가져오는 AJAX 요청
+        $.ajax({
+            type: "PUT",
+            url: "/users/updates/delete",
+            headers: {
+                Authorization: token
+            },
+            success: function (response) {
+                alert(response);
+                Cookies.remove('Authorization', {path: '/'});
+                window.location.href = '/login.html';
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("비활성화 하는데 실패했습니다.");
+            }
+        });
+    }
+
 
     // 검색 버튼 클릭 시 검색어를 이용하여 게시글 검색
     $('#search-btn').on('click', function () {

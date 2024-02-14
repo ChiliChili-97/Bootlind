@@ -81,10 +81,10 @@ public class UserController {
         return userService.updateNickname(request, userDetails.getUser());
     }
 
-    @PutMapping("/users/updates/profile/{profile}")
+    @PutMapping("/users/updates/profile")
     @Operation(summary = "회원정보 수정(profile)", description = "회원의 profile을 변경한다.")
-    public String updateProfile(@PathVariable String profile, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.updateProfile(profile, userDetails.getUser());
+    public String updateProfile(@RequestBody UpdateProfileRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.updateProfile(request, userDetails.getUser());
     }
 
     @PutMapping("/users/updates/password")

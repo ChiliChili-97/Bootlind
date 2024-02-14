@@ -77,6 +77,7 @@ public class UserService {
         return userfollow.follow(target.getId());
     }
 
+    @Transactional
     public String deactivateUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -94,6 +95,7 @@ public class UserService {
         return "비활성화 상태로 변경되었습니다.";
     }
 
+    @Transactional
     public String activateUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -111,6 +113,7 @@ public class UserService {
         return "활성화 상태로 변경되었습니다.";
     }
 
+    @Transactional
     public String deleteUser(User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -124,6 +127,7 @@ public class UserService {
         return "탈퇴 상태로 변경되었습니다";
     }
 
+    @Transactional
     public String restoreUser(Long id, SignupRequest requestDto, User user) {
 
         //if(user!=관리자)
@@ -154,6 +158,7 @@ public class UserService {
         return "복구 되었습니다.";
     }
 
+    @Transactional
     public String updateUsername(UpdateUsernameRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -169,6 +174,7 @@ public class UserService {
         return "수정 되었습니다.";
     }
 
+    @Transactional
     public String updateNickname(UpdateNicknameRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
@@ -184,16 +190,18 @@ public class UserService {
         return "수정 되었습니다.";
     }
 
-    public String updateProfile(String profile, User user) {
+    @Transactional
+    public String updateProfile(UpdateProfileRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
-        target.updateProfile(profile);
+        target.updateProfile(request.getProfile());
 
         return "수정 되었습니다.";
     }
 
+    @Transactional
     public String updatePassword(UpdatePasswordRequest request, User user) {
         User target = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
