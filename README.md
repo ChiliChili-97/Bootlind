@@ -1,4 +1,4 @@
-![image](https://github.com/ChiliChili-97/Bootlind/assets/53809248/badf02fe-152f-4968-b9fe-265bd30faa1a)
+
  **`🔥부트캠프 수강생들을 위한 블라인드 커뮤니티 붙라인드`**
 
 전국의 다양한 부트캠프 수강자들, 예비 주니어 개발자들을 위한 커뮤니티 입니다.
